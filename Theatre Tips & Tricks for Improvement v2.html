@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Theatre Tips &amp; Tricks for Improvement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;700&family=Alegreya+Sans:wght@400;500;700&family=Fraunces:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #ffffff;
+    --ink: #3d2b23;
+    --ink-soft: #5e4a40;
+    --gray: #d9d9d9;
+    --blue: #dae3f3;
+    --yellow: #fff2cc;
+    --green: #e2f0d9;
+    --rule: rgba(61, 43, 35, .28);
+    --display: "Fraunces", Georgia, "Times New Roman", serif;
+    --serif: "Alegreya", Georgia, "Times New Roman", serif;
+    --sans: "Alegreya Sans", "Trebuchet MS", Verdana, sans-serif;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --page: #1e1714; }
+  }
+  :root[data-theme="dark"] { --page: #1e1714; }
+
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  *, *::before, *::after { box-sizing: inherit; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 1.2rem;
+    line-height: 1.45;
+    min-height: 100vh;
+  }
+
+  /* ---------- Bands (one per row) ---------- */
+  .band {
+    padding: 1.4rem max(1.25rem, env(safe-area-inset-left, 0px)) 1.6rem max(1.25rem, env(safe-area-inset-right, 0px));
+    text-align: center;
+  }
+  .band[hidden] { display: none; }
+  .band-issues, .band-detail { animation: reveal .22s ease-out; }
+  @keyframes reveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .swap { animation: fade .18s ease-out; }
+  @media (prefers-reduced-motion: reduce) {
+    .band, .swap { animation: none !important; }
+  }
+
+  .band-title   { background: var(--gray);  padding-block: 1.1rem; }
+  .band-strands { background: var(--blue);  }
+  .band-issues  { background: var(--yellow);}
+  .band-detail  { background: var(--green); }
+
+  h1 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.35rem, 3.4vw, 1.85rem);
+    line-height: 1.2;
+  }
+  h2 {
+    margin: 0 0 .15rem;
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+  .hint {
+    margin: 0 0 .9rem;
+    font-size: 1rem;
+    color: var(--ink-soft);
+  }
+  .context {
+    margin: 0 0 1rem;
+    font-weight: 700;
+    font-size: 1.15rem;
+  }
+
+  /* ---------- Options: bold on hover, without shifting layout ---------- */
+  .t { display: grid; }
+  .t > span { grid-area: 1 / 1; }
+  .t::after {
+    content: attr(data-t);
+    content: attr(data-t) / "";
+    grid-area: 1 / 1;
+    font-weight: 700;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .opt {
+    appearance: none;
+    background: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    font: inherit;
+    color: inherit;
+    text-align: inherit;
+    cursor: pointer;
+  }
+  .opt:hover .t > span,
+  .opt:focus-visible .t > span,
+  .opt.is-on .t > span { font-weight: 700; }
+  .opt:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 3px; }
+
+  /* ---------- Strands row ---------- */
+  .strands {
+    list-style: none;
+    margin: 0 auto;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: .6rem;
+    max-width: 82rem;
+  }
+  .strand {
+    width: 15.5rem;
+    max-width: 100%;
+    padding: .7rem 1rem .8rem;
+    border-radius: 6px;
+    text-align: center;
+  }
+  .strand:hover { background: rgba(255,255,255,.4); }
+  .strand.is-on { background: rgba(255,255,255,.75); box-shadow: inset 0 -3px 0 var(--ink); }
+  .strand .cat { font-family: var(--display); font-weight: 500; font-size: .85rem; margin-bottom: .15rem; }
+  .strand .desc { font-family: var(--sans); font-weight: 500; font-size: 1.1rem; line-height: 1.3; }
+
+  /* ---------- Bullet lists (centered block, left-aligned text) ---------- */
+  .list {
+    margin: 0 auto;
+    padding: 0 0 0 1.25rem;
+    width: fit-content;
+    max-width: min(46rem, 100%);
+    text-align: left;
+  }
+  .list li { padding: .22rem 0; }
+  .list li::marker { color: var(--ink-soft); }
+  .list .opt { display: block; width: 100%; padding: .12rem 0; }
+  .list.serif { font-family: var(--serif); font-size: 1.25rem; line-height: 1.4; }
+  .list.sans  { font-family: var(--sans);  font-size: 1.2rem; }
+  .list .opt.is-on { background: rgba(255,255,255,.6); box-shadow: -.4rem 0 0 rgba(255,255,255,.6), .4rem 0 0 rgba(255,255,255,.6); }
+
+  /* ---------- Insights + Strategies, side by side ---------- */
+  .detail-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 72rem;
+    margin: 0 auto;
+  }
+  .col { padding: 0 2rem; }
+  .col + .col { border-left: 1px solid var(--rule); }
+  .col h2 { margin-bottom: .6rem; }
+
+  footer { height: 2.5rem; }
+
+  @media (max-width: 760px) {
+    .detail-cols { grid-template-columns: 1fr; }
+    .col { padding: 0; }
+    .col + .col { border-left: 0; border-top: 1px solid var(--rule); margin-top: 1.3rem; padding-top: 1.3rem; }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 1.1rem; }
+    .strand { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<main>
+  <header class="band band-title">
+    <h1>Theatre Tips &amp; Tricks for Improvement</h1>
+  </header>
+
+  <section class="band band-strands" aria-label="Strands">
+    <h2>Strand</h2>
+    <p class="hint" id="hint-strand">Choose a strand.</p>
+    <ul class="strands" id="strands"></ul>
+  </section>
+
+  <section class="band band-issues" id="band-issues" aria-label="Issues" hidden>
+    <h2>Issues</h2>
+    <p class="hint">Choose an issue.</p>
+    <ul class="list sans" id="issues"></ul>
+  </section>
+
+  <section class="band band-detail" id="band-detail" aria-label="Insights and strategies" aria-live="polite" hidden>
+    <p class="context" id="detail-for"></p>
+    <div class="detail-cols" id="detail-cols">
+      <div class="col">
+        <h2>Insights</h2>
+        <ul class="list serif" id="insights"></ul>
+      </div>
+      <div class="col">
+        <h2>Strategies</h2>
+        <ul class="list sans" id="strategy"></ul>
+      </div>
+    </div>
+  </section>
+
+  <footer></footer>
+</main>
+
+<script>
+(function () {
+  var STRANDS = [
+    {
+      cat: "JOINING IN",
+      desc: "Constructively engages in activities and discussions",
+      issues: [
+        {
+          label: "Hanging back",
+          insights: [
+            "Engagement is something the room can see.",
+            "Volunteering early is almost always easier than volunteering late.",
+            "The longer you wait, the harder joining in feels."
+          ],
+          fix: ["Join the first group that forms, not the last.", "You don’t need a plan yet—walk over and find what you can add once you’re there."]
+        },
+        {
+          label: "Quiet in discussion",
+          insights: ["Being interested on the inside doesn’t read from the outside—your body, your eyes, and your voice are what tell us you’re in it.", "A question is a contribution. It shows you’re listening and gives the group something to build on."],
+          fix: ["Come in with a question instead of waiting until you have the right answer.", "Starters help: “Can I ask…” or “What if we…”"]
+        },
+        {
+          label: "Drifting during someone else’s scene",
+          insights: ["Engagement is something the room can see.", "The people performing can feel whether the room is with them."],
+          fix: ["Watch for one specific choice you could name out loud afterward.", "Pick your choice before the scene starts so your eyes have a job."]
+        },
+        {
+          label: "Only speak when called on",
+          insights: ["Volunteering early is almost always easier than volunteering late.", "Waiting to be called on makes speaking feel like a test. Going first makes it a contribution."],
+          fix: ["Go first once per class.", "It doesn’t have to be big—one sentence counts."]
+        }
+      ]
+    },
+    {
+      cat: "JOINING IN",
+      desc: "Persists through challenges",
+      issues: [
+        {
+          label: "Frozen on an entrance",
+          insights: ["Having a tool ready beats having confidence.", "Freezing usually means your attention moved to how you look instead of what the character wants."],
+          fix: ["Decide what you want before you walk on.", "Pick a first action—a look, a step, a word—and let the want drive it."]
+        },
+        {
+          label: "Blanked in improv",
+          insights: ["“I can’t” almost always means “I haven’t found a way in yet.”", "You don’t need a brilliant idea. Your partner already gave you something to work with."],
+          fix: ["Say yes to your partner’s last line and build on it.", "Still stuck? Repeat their last line back with a new feeling."]
+        },
+        {
+          label: "Lines won’t stick",
+          insights: ["In theatre the hard part is usually the part worth doing.", "Lines stick better when your body is involved, not just your eyes."],
+          fix: ["Say them out loud while walking around your house.", "Speak each line to a specific person or object so it has somewhere to land."]
+        },
+        {
+          label: "Scene fell flat",
+          insights: ["Having a tool ready beats having confidence.", "A flat scene usually needs a clearer want, not more effort."],
+          fix: ["Change one, specific thing and run it again.", "Choose one to adjust: tempo, tension, distance, or what the character wants."]
+        },
+        {
+          label: "Embarrassed by a mistake",
+          insights: ["In theatre the hard part is usually the part worth doing.", "Audiences forgive mistakes quickly. They notice whether you stayed in the scene."],
+          fix: ["Finish the scene first, judge it after.", "If you can, treat the mistake as a choice and build on it."]
+        }
+      ]
+    },
+    {
+      cat: "CITIZENSHIP",
+      desc: "Works positively and respectfully with others",
+      issues: [
+        {
+          label: "Partner’s idea isn’t yours",
+          insights: ["An ensemble is built out of small moments: what you do with a partner’s idea you didn’t pick.", "Running a partner’s idea fully is the only way to find out if it works."],
+          fix: ["Run it fully once.", "Offer your idea.", "Give that a try next."]
+        },
+        {
+          label: "Someone takes a risk",
+          insights: [
+            "An ensemble is built out of small moments: how you react when someone takes a risk.",
+            "Your reaction is contagious. So is your indifference."
+          ],
+          fix: ["Make sure you’re laughing with and applaud after.", "Stay open while it’s happening—your face and body tell them whether it’s safe."]
+        },
+        {
+          label: "Stuck in a group you didn’t pick",
+          insights: ["An ensemble is built out of small moments: how you treat the group you didn’t choose.", "Actors rarely choose their casts. Working well with whoever is in the room is part of the job."],
+          fix: ["Treat that as the assignment.", "Learn one thing each person brings, and use it."]
+        },
+        {
+          label: "Giving feedback",
+          insights: ["Your reaction is contagious. So is your indifference.", "Feedback is for the next run, not a rating of the person."],
+          fix: ["Name something specific that worked before anything that didn’t.", "Then say what you’d try next time instead of what was wrong."]
+        }
+      ]
+    },
+    {
+      cat: "CITIZENSHIP",
+      desc: "Arrives organized and prepared\u00a0for\u00a0class",
+      issues: [
+        {
+          label: "Always last into the circle",
+          insights: ["Prepared means the work can start without waiting on you.", "The first minutes are when the group warms up together."],
+          fix: ["Body in the space before the bell.", "Start moving toward class a little earlier than feels necessary."]
+        },
+        {
+          label: "Lines not learned",
+          insights: ["Prepared means the work can start without waiting on you.", "Knowing your lines frees you to listen and react instead of searching for the next word."],
+          fix: ["Ten minutes a day beats an hour the night before.", "Attach it to a habit you already have, like brushing your teeth."]
+        },
+        {
+          label: "Script left at home",
+          insights: ["In a shared art form, “I forgot mine” costs everyone’s time, not just yours.", "Without your script, your partners can’t rehearse with you either."],
+          fix: ["Give it one home in your bag and keep it there.", "Check for it when you pack up at the end of class."]
+        }
+      ]
+    },
+    {
+      cat: "ARTISTIC GROWTH",
+      desc: "Utilizes acquired course skills to take creative risks",
+      issues: [
+        {
+          label: "Playing it safe",
+          insights: ["Risk means the outcome isn’t guaranteed—the safe choice is the one you already know will work.", "The safe choice is also the one the audience expects."],
+          fix: ["Make the opposite choice and see what it costs the character.", "Try the bolder version once, for real, before deciding it doesn’t fit."]
+        },
+        {
+          label: "Choice reads as generic",
+          insights: ["A bold choice is specific, not loud.", "A generic choice could belong to any character. A specific one belongs to yours."],
+          fix: ["Give the character one physical detail you can commit to.", "Ask how this character walks, holds their hands, or looks at people—then pick one."]
+        },
+        {
+          label: "Same character every time",
+          insights: ["Use the vocabulary from class to make a choice bigger, not just different.", "Changing one thing at a time lets you see what each one does."],
+          fix: ["Change your tempo or your level of tension before you change anything else.", "You can also change your pitch, tone, emphasis, or characterization."]
+        },
+        {
+          label: "Afraid of looking foolish",
+          insights: ["Risk means the outcome isn’t guaranteed—the safe choice is the one you already know will work.", "In a room full of people taking risks, commitment is what gets noticed."],
+          fix: ["Commit at 100%.", "Half-committed is what actually looks awkward."]
+        },
+        {
+          label: "Waiting for your turn to talk",
+          insights: [
+            "Acting is reacting.",
+            "You’re in the scene the whole time, not just on your lines — most of what the audience watches you do happens while someone else is talking."
+          ],
+          fix: ["Show us what your partner’s line did to you before you answer.", "Let your face and body change before your voice does."]
+        }
+      ]
+    }
+  ];
+
+  var el = {
+    strands: document.getElementById("strands"),
+    hintStrand: document.getElementById("hint-strand"),
+    bandIssues: document.getElementById("band-issues"),
+    bandDetail: document.getElementById("band-detail"),
+    issues: document.getElementById("issues"),
+    detailFor: document.getElementById("detail-for"),
+    detailCols: document.getElementById("detail-cols"),
+    insights: document.getElementById("insights"),
+    strategy: document.getElementById("strategy")
+  };
+
+  var state = { strand: null, issue: null };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Text wrapper that reserves room for bold so hovering never shifts the layout.
+  function t(text, cls) {
+    var wrap = document.createElement("span");
+    wrap.className = "t" + (cls ? " " + cls : "");
+    wrap.setAttribute("data-t", text);
+    var inner = document.createElement("span");
+    inner.textContent = text;
+    wrap.appendChild(inner);
+    return wrap;
+  }
+
+  function option(cls) {
+    var b = document.createElement("button");
+    b.type = "button";
+    b.className = "opt " + cls;
+    b.setAttribute("aria-pressed", "false");
+    return b;
+  }
+
+  function setOn(button, on) {
+    button.classList.toggle("is-on", on);
+    button.setAttribute("aria-pressed", on ? "true" : "false");
+  }
+
+  function reveal(band) {
+    band.hidden = false;
+    band.scrollIntoView({ block: "nearest", behavior: reduced ? "auto" : "smooth" });
+  }
+
+  function fillList(ul, lines) {
+    ul.textContent = "";
+    lines.forEach(function (line) {
+      var li = document.createElement("li");
+      li.textContent = line;
+      ul.appendChild(li);
+    });
+  }
+
+  // ----- Row 1: strands -----
+  STRANDS.forEach(function (s, i) {
+    var li = document.createElement("li");
+    var b = option("strand");
+    b.appendChild(t(s.cat, "cat"));
+    b.appendChild(t(s.desc, "desc"));
+    b.addEventListener("click", function () { selectStrand(i); });
+    li.appendChild(b);
+    el.strands.appendChild(li);
+  });
+
+  function selectStrand(i) {
+    state.strand = i;
+    state.issue = null;
+    el.hintStrand.hidden = true;
+
+    Array.prototype.forEach.call(el.strands.querySelectorAll(".strand"), function (b, j) {
+      setOn(b, j === i);
+    });
+
+    // Row 2: issues
+    el.issues.textContent = "";
+    STRANDS[i].issues.forEach(function (issue, n) {
+      var li = document.createElement("li");
+      var b = option("issue");
+      b.appendChild(t(issue.label));
+      b.addEventListener("click", function () { selectIssue(n); });
+      li.appendChild(b);
+      el.issues.appendChild(li);
+    });
+
+    // Row 3 stays closed until an issue is chosen
+    el.bandDetail.hidden = true;
+    reveal(el.bandIssues);
+  }
+
+  // ----- Row 3: insights and strategies, together -----
+  function selectIssue(n) {
+    state.issue = n;
+    var issue = STRANDS[state.strand].issues[n];
+
+    Array.prototype.forEach.call(el.issues.querySelectorAll(".issue"), function (b, j) {
+      setOn(b, j === n);
+    });
+
+    el.detailFor.textContent = issue.label;
+    fillList(el.insights, issue.insights);
+    fillList(el.strategy, issue.fix);
+
+    if (!reduced) {
+      el.detailCols.classList.remove("swap");
+      void el.detailCols.offsetWidth;
+      el.detailCols.classList.add("swap");
+    }
+    reveal(el.bandDetail);
+  }
+})();
+</script>
+</body>
+</html>
